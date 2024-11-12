@@ -27,6 +27,7 @@ public class Switches {
     } else if (sliderX + sliderW/2 > x + w/2) {
       sliderX = x + w/2 - sliderW/2 - 1;
     }
+    
     if (mouseOverSlider() && (sliderX - sliderW/2) >= (x - w/2) && (sliderX + sliderW/2) <= (x + w/2)) {
       sliderX = mouseX;
     }

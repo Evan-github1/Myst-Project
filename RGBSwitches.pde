@@ -1,15 +1,12 @@
 class RGBSwitches extends Switches {
-  protected int r, g, b;
+  public int defColor;
   protected int sliderX2, sliderX3, sliderY2, sliderY3;
-  public RGBSwitches(int switchX, int switchY, int switchW, int switchH, int rd, int gd, int bd) {
+  public RGBSwitches(int switchX, int switchY, int switchW, int switchH, int giveColor) {
     // inherit the constructor variables from Switches class
     super(switchX, switchY, switchW, switchH);
     sliderW = w/32;
-    sliderX = rd * 3 + x - w/2;
-
-    r = rd;
-    g = gd;
-    b = bd;
+    defColor = giveColor;
+    sliderX = defColor * 3 + x - w/2;
   }
 
   public void drawSwitch() {
@@ -17,14 +14,11 @@ class RGBSwitches extends Switches {
     noStroke();    
     fill(0, 0, 0);
     rect(x, y, w, h/3);
-    
     fill(255, 255, 255);
     rect(sliderX, sliderY, sliderW, sliderH);
   }
   
   public float returnColorValue() {
-    return (sliderX - x + w/2)/3;
+    return (sliderX - x + w/2)/(w/255);
   }
-   
 }
-  

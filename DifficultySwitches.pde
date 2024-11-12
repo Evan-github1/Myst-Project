@@ -39,6 +39,4 @@ public class DifficultySwitches extends Switches {
       difficulty = "Hard";
     }
   }
-  
-  
 }
