@@ -183,13 +183,25 @@ public void settingsScreen() {
 }
 
 public void targetGame() {
+   textSize(50);
+   fill(0, 0, 0);
+   text("Score: " + tracking.score, 550, 100);
+   text("Max Score: " + tracking.maxScore, 550, 150);
+
    trackingTarget.drawTarget();
    tracking.timer++;
    if (tracking.checkTimeLimit()) {
+     tracking.detectMaxScore();
+     if (trackingSwitch.maxDifficulty == "Easy" && tracking.score > 0) {
+       trackingSwitch.maxDifficulty = "Medium";
+     } else if (trackingSwitch.maxDifficulty == "Medium" && tracking.score > 0) {
+       trackingSwitch.maxDifficulty = "Hard";
+     }
      System.out.println("Final Score: " + tracking.score + "/" + tracking.maxTime);
+
      screen = "trackingstart";
      tracking.timer = 0;
-     
+
    }
    if (mousePressed && trackingTarget.mouseOverTarget() && trackingTarget.checkScreen("trackinggame")) {
      tracking.score++;

@@ -1,5 +1,5 @@
 public class Game {
-  int score, timer, maxScore, maxTime, maxDifficulty;
+  int score, timer, maxScore, maxTime;
   Game(int gameTimer) {
     score = 0;
     timer = 0;
@@ -17,11 +17,9 @@ public class Game {
     }
   }
   // score
-  public boolean detectMaxScore() {
+  public void detectMaxScore() {
     if (score > maxScore) {
-      return true;
-    } else {
-      return false;
+      maxScore = score;
     }
   }
   

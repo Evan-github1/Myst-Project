@@ -1,11 +1,12 @@
 public class DifficultySwitches extends Switches {
-  String difficulty;
+  String difficulty, maxDifficulty;
 
   public DifficultySwitches(int switchX, int switchY, int switchW, int switchH) {
     // inherit the constructor variables from Switches class
     super(switchX, switchY, switchW, switchH);
     // default difficulty
     difficulty = "Easy";
+    maxDifficulty = "Easy";
   }
 
   public void drawSwitch() {
@@ -31,11 +32,12 @@ public class DifficultySwitches extends Switches {
   }
    
   void detectDifficulty() {
-    if ((sliderX - sliderW/2) >= (x - w/3 - w/6) && (sliderX + sliderW/2) <= (x - w/3 + w/6)) {
+    
+    if ((sliderX - sliderW/2) >= (x - w/3 - w/6) && (sliderX + sliderW/2) <= (x - w/3 + w/6) && (maxDifficulty == "Easy" || maxDifficulty == "Medium" || maxDifficulty == "Hard")) {
       difficulty = "Easy";
-    } else if ((sliderX - sliderW/2) >= (x - w/6) && (sliderX + sliderW/2) <= (x + w/6)){
+    } else if ((sliderX - sliderW/2) >= (x - w/6) && (sliderX + sliderW/2) <= (x + w/6) && (maxDifficulty == "Medium" || maxDifficulty == "Hard")){
       difficulty = "Medium";
-    } else if ((sliderX - sliderW/2) >= (x + w/3 - w/6) && (sliderX + sliderW/2) <= (x + w/3 + w/6)){
+    } else if ((sliderX - sliderW/2) >= (x + w/3 - w/6) && (sliderX + sliderW/2) <= (x + w/3 + w/6) && maxDifficulty == "Hard"){
       difficulty = "Hard";
     }
   }
