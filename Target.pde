@@ -1,7 +1,8 @@
 public class Target {
   float x, y, w, h, dirChance1, dirChance2, timer, dx, dy;
   final float FX, FY, FW, FH, FDX, FDY;
-  Target(int targetX, int targetY, int targetW, int targetH, float targetDX, float targetDY) {
+  Target(int targetX, int targetY, int targetW, int targetH, float targetDX, float targetDY) { 
+    // note- not all targets have to be moving, set DX and DY to 0 if it is static
     x = targetX;
     y = targetY;
     w = targetW;
@@ -46,10 +47,9 @@ public class Target {
   
   public void moveTarget() {
      timer++;
-     if (timer >= 120) {
+     if (timer >= 60) {
        dirChance1 = (int) random(1, 3);
        dirChance2 = (int) random(1, 3);
-       System.out.println(dirChance1);
        timer = 0;
      }
      

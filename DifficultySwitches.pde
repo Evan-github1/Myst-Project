@@ -1,12 +1,15 @@
 public class DifficultySwitches extends Switches {
   String difficulty, maxDifficulty;
+  int reqScore;
 
-  public DifficultySwitches(int switchX, int switchY, int switchW, int switchH) {
+  public DifficultySwitches(int switchX, int switchY, int switchW, int switchH, int requiredScore) {
     // inherit the constructor variables from Switches class
     super(switchX, switchY, switchW, switchH);
     // default difficulty
     difficulty = "Easy";
     maxDifficulty = "Easy";
+    
+    reqScore = requiredScore;
   }
 
   public void drawSwitch() {
@@ -28,17 +31,25 @@ public class DifficultySwitches extends Switches {
     rect(sliderX, sliderY, sliderW, sliderH);
     
     fill(0, 0, 0);
+    textSize(50);
     text("Difficulty Mode: " + difficulty, x, y + h);
   }
    
-  void detectDifficulty() {
-    
+  protected void detectDifficulty() {
     if ((sliderX - sliderW/2) >= (x - w/3 - w/6) && (sliderX + sliderW/2) <= (x - w/3 + w/6) && (maxDifficulty == "Easy" || maxDifficulty == "Medium" || maxDifficulty == "Hard")) {
       difficulty = "Easy";
-    } else if ((sliderX - sliderW/2) >= (x - w/6) && (sliderX + sliderW/2) <= (x + w/6) && (maxDifficulty == "Medium" || maxDifficulty == "Hard")){
-      difficulty = "Medium";
-    } else if ((sliderX - sliderW/2) >= (x + w/3 - w/6) && (sliderX + sliderW/2) <= (x + w/3 + w/6) && maxDifficulty == "Hard"){
-      difficulty = "Hard";
+    } else if ((sliderX - sliderW/2) >= (x - w/6) && (sliderX + sliderW/2) <= (x + w/6)){
+      if ((maxDifficulty == "Medium" || maxDifficulty == "Hard")) {
+        difficulty = "Medium";
+      } else {
+        text("Get " + reqScore + " on Easy to Unlock Medium!", x, y + 1.5 * h);
+      }
+    } else if ((sliderX - sliderW/2) >= (x + w/3 - w/6) && (sliderX + sliderW/2) <= (x + w/3 + w/6)){
+      if (maxDifficulty == "Hard") {
+        difficulty = "Hard";
+      } else {
+        text("Get " + reqScore + " on Medium to Unlock Hard!", x, y + 1.5 * h);
+      }
     }
   }
 }

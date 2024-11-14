@@ -1,8 +1,8 @@
-Buttons play, htp, trackingButton, back, trackingStart, settings, restoreDefault;
-DifficultySwitches trackingSwitch;
+Buttons play, htp, trackingButton, back, start, settings, restoreDefault, flickingButton;
+DifficultySwitches trackingSwitch, flickingSwitch;
 RGBSwitches backgroundColorSwitchR, backgroundColorSwitchG, backgroundColorSwitchB;
-Game tracking;
-Target trackingTarget;
+Game tracking, flicking;
+Target trackingTarget, flickingTarget;
 String screen = "mainscreen";
 int windupTimer = 0;
 public void setup() {
@@ -12,22 +12,25 @@ public void setup() {
   htp = new Buttons(550, 400, 350, 100, "HOW TO PLAY");
   trackingButton = new Buttons(550, 250, 250, 100, "TRACKING");
   back = new Buttons(1050, 700, 50, 50, "BACK");
-  trackingStart = new Buttons(550, 550, 200, 100, "START");
+  start = new Buttons(550, 550, 200, 100, "START");
   settings = new Buttons(550, 550, 250, 100, "SETTINGS");
   restoreDefault = new Buttons(550, 600, 350, 100, "RESTORE DEFAULT");
+  flickingButton = new Buttons(550, 400, 250, 100, "FLICKING");
 
   // switches
-  trackingSwitch = new DifficultySwitches(550, 300, 300, 100);
+  trackingSwitch = new DifficultySwitches(550, 300, 300, 100, 400);
+  flickingSwitch = new DifficultySwitches(550, 300, 300, 100, 900);
   backgroundColorSwitchR = new RGBSwitches(550, 275, 765, 50, 74);
   backgroundColorSwitchG = new RGBSwitches(550, 375, 765, 50, 110);
   backgroundColorSwitchB = new RGBSwitches(550, 475, 765, 50, 229);
 
-
   // games
   tracking = new Game(20);
+  flicking = new Game(30);
   
   // targets
   trackingTarget = new Target(550, 375, 50, 50, 3, 3);
+  flickingTarget = new Target(550, 375, 50, 50, 0, 0);
   
   textAlign(CENTER, CENTER);
 }
@@ -47,22 +50,21 @@ public void draw() {
     howToPlayScreen();
     break;
   case "trackingstart":
-    trackingStartScreen();
+    startScreen();
     break;
   case "settingsscreen":
     settingsScreen();
     break;
   case "trackinggame":
-    targetGame();
+    trackingGame();
+    break;
+  case "flickingstart":
+    flickingStartScreen();
+    break;
+  case "flickinggame":
+    flickingGame();
     break;
   }
-
-  //gun
-  //rectMode(CENTER);
-  //stroke(0, 0, 0);
-  //fill(105, 105, 105);
-  //rect(900, 650, 100, 200);
-  //rect(900, 500, 100, 100);
 }
 
 public void mouseReleased() {
@@ -70,50 +72,77 @@ public void mouseReleased() {
   // switches screens and disables buttons not relative to screen
   // (this means every if statement should have at mouseOverButton() and checkScreen(String) methods)
   if (play.mouseOverButton() && play.checkScreen("mainscreen")) {
+      // different games screen
       screen = "playscreen";
   } else if (htp.mouseOverButton() && htp.checkScreen("mainscreen")) {
+      // how to play screen
       screen = "howtoplayscreen";
   } else if (trackingButton.mouseOverButton() && trackingButton.checkScreen("playscreen")) {
+      // tracking starting screen
       screen = "trackingstart";
   } else if (settings.mouseOverButton() && settings.checkScreen("mainscreen")) {
+      // settings screen
       screen = "settingsscreen";
-  } else if (trackingStart.mouseOverButton() && trackingStart.checkScreen("trackingstart")) {
+  } else if (flickingButton.mouseOverButton() && trackingButton.checkScreen("playscreen")) {
+      screen = "flickingstart";
+  } else if (start.mouseOverButton()) {
+    if (start.checkScreen("trackingstart")) {
+      // tracking game
+      // resets things
       tracking.score = 0;
       tracking.timer = 0;
       trackingTarget.x = trackingTarget.FX;
       trackingTarget.y = trackingTarget.FY;
       
+      // detects diffculty
       if (trackingSwitch.difficulty == "Easy") {
-       trackingTarget.w = trackingTarget.FW;
-       trackingTarget.h = trackingTarget.FH;
-       trackingTarget.dx = trackingTarget.FDX;
-       trackingTarget.dy = trackingTarget.FDY;
-       System.out.println(trackingTarget.FW);
-     } else if (trackingSwitch.difficulty == "Medium") {
-       trackingTarget.w = trackingTarget.FW/1.5;
-       trackingTarget.h = trackingTarget.FH/1.5;
-       trackingTarget.dx = trackingTarget.FDX * 1.2;
-       trackingTarget.dy = trackingTarget.FDY * 1.2;
-     } else if (trackingSwitch.difficulty == "Hard") {
-       trackingTarget.w = trackingTarget.FW/2;
-       trackingTarget.h = trackingTarget.FH/2;
-       trackingTarget.dx = trackingTarget.FDX * 1.5;
-       trackingTarget.dy = trackingTarget.FDY * 1.5;
-   }
-   
+         trackingTarget.w = trackingTarget.FW;
+         trackingTarget.h = trackingTarget.FH;
+         trackingTarget.dx = trackingTarget.FDX;
+         trackingTarget.dy = trackingTarget.FDY;
+       } else if (trackingSwitch.difficulty == "Medium") {
+         trackingTarget.w = trackingTarget.FW/1.5;
+         trackingTarget.h = trackingTarget.FH/1.5;
+         trackingTarget.dx = trackingTarget.FDX * 1.2;
+         trackingTarget.dy = trackingTarget.FDY * 1.2;
+       } else if (trackingSwitch.difficulty == "Hard") {
+         trackingTarget.w = trackingTarget.FW/2;
+         trackingTarget.h = trackingTarget.FH/2;
+         trackingTarget.dx = trackingTarget.FDX * 1.5;
+         trackingTarget.dy = trackingTarget.FDY * 1.5;
+       }
       screen = "trackinggame";
+    } else if (start.checkScreen("flickingstart")) {
+      // resets things
+      tracking.score = 0;
+      tracking.timer = 0;
+      trackingTarget.x = trackingTarget.FX;
+      trackingTarget.y = trackingTarget.FY;
+      
+      // detects diffculty
+      if (trackingSwitch.difficulty == "Easy") {
+         trackingTarget.w = trackingTarget.FW;
+         trackingTarget.h = trackingTarget.FH;
+       } else if (trackingSwitch.difficulty == "Medium") {
+         trackingTarget.w = trackingTarget.FW/1.5;
+         trackingTarget.h = trackingTarget.FH/1.5;
+       } else if (trackingSwitch.difficulty == "Hard") {
+         trackingTarget.w = trackingTarget.FW/2;
+         trackingTarget.h = trackingTarget.FH/2;
+      }
+      screen = "flickinggame";
   }
-  
+  }
     else if (restoreDefault.mouseOverButton() && restoreDefault.checkScreen("settingsscreen")) {
       backgroundColorSwitchR.sliderX = 74 * 3 + backgroundColorSwitchR.x - backgroundColorSwitchR.w/2;
       backgroundColorSwitchG.sliderX = 110 * 3 + backgroundColorSwitchG.x - backgroundColorSwitchG.w/2;
       backgroundColorSwitchB.sliderX = 229 * 3 + backgroundColorSwitchB.x - backgroundColorSwitchB.w/2;
   }
   // previous screens buttons
-  else if (back.mouseOverButton()) {
+    else if (back.mouseOverButton()) {
     if (back.checkScreen("playscreen") || back.checkScreen("howtoplayscreen") || back.checkScreen("settingsscreen")) {
       screen = "mainscreen";
-    } else if (back.checkScreen("trackingstart")) {
+    } else if (back.checkScreen("trackingstart") || back.checkScreen("flickingstart")) {
       screen = "playscreen";
     } 
   }
@@ -126,12 +155,15 @@ public void mouseDragged() {
     backgroundColorSwitchR.dragSlider();
     backgroundColorSwitchG.dragSlider();
     backgroundColorSwitchB.dragSlider();
+  } else if (flickingSwitch.checkScreen("flickingstart")) {
+    flickingSwitch.dragSlider();
   }
 }
 
 
 // different screens
 public void mainScreen() {
+  // home screen, aka the first screen you see
   play.drawButton();
   htp.drawButton();
   settings.drawButton();
@@ -142,7 +174,9 @@ public void mainScreen() {
 }
 
 public void playScreen() {
+  // all games screen
   trackingButton.drawButton();
+  flickingButton.drawButton();
   back.drawButton();
   textSize(50);
   fill(0, 0, 0);
@@ -150,6 +184,7 @@ public void playScreen() {
 }
 
 public void howToPlayScreen() {
+  // instructions and credit
   back.drawButton();
   textSize(50);
   fill(0, 0, 0);
@@ -158,17 +193,19 @@ public void howToPlayScreen() {
   text("Precision Pulse is a game to train your aim in FPS games! \n FOR THE BEST EXPERIENCE, USE A MOUSE! \n\n Press PLAY on the main screen to be introduced to different courses. \n Each course's difficulty can be toggled after completing the first mode. \n\n This project is greatly inspired by popular aim trainer AimLabs. \n Made by Evan Xiang.", 550, 300);
 }
 
-public void trackingStartScreen() {
+public void startScreen() {
+  // adjust difficulty and press start for tracking
   back.drawButton();
   textSize(50);
   fill(0, 0, 0);
   text("Tracking", 550, 100);
   trackingSwitch.drawSwitch();
   trackingSwitch.detectDifficulty();
-  trackingStart.drawButton();
+  start.drawButton();
 }
 
 public void settingsScreen() {
+  // change background color
   backgroundColorSwitchR.drawSwitch();
   backgroundColorSwitchG.drawSwitch();
   backgroundColorSwitchB.drawSwitch();
@@ -182,7 +219,8 @@ public void settingsScreen() {
   text("B:", backgroundColorSwitchB.x - backgroundColorSwitchB.w/1.8, backgroundColorSwitchB.y);
 }
 
-public void targetGame() {
+public void trackingGame() {
+   // actual tracking game
    textSize(50);
    fill(0, 0, 0);
    text("Score: " + tracking.score, 550, 100);
@@ -190,23 +228,70 @@ public void targetGame() {
 
    trackingTarget.drawTarget();
    tracking.timer++;
+   text("Time Left: " + (round((1200 - tracking.timer)/60)), 550, 200);
+   
+   // calculates everything once time limit is up
    if (tracking.checkTimeLimit()) {
      tracking.detectMaxScore();
-     if (trackingSwitch.maxDifficulty == "Easy" && tracking.score > 0) {
+     if (trackingSwitch.difficulty == "Easy" && tracking.score >= trackingSwitch.reqScore) {
        trackingSwitch.maxDifficulty = "Medium";
-     } else if (trackingSwitch.maxDifficulty == "Medium" && tracking.score > 0) {
+     } else if (trackingSwitch.difficulty == "Medium" && tracking.score >= trackingSwitch.reqScore) {
        trackingSwitch.maxDifficulty = "Hard";
      }
+     // perhaps have a popup that gives you final score?
      System.out.println("Final Score: " + tracking.score + "/" + tracking.maxTime);
-
+     // reset
      screen = "trackingstart";
      tracking.timer = 0;
-
    }
+   
+   // scoring points
    if (mousePressed && trackingTarget.mouseOverTarget() && trackingTarget.checkScreen("trackinggame")) {
      tracking.score++;
    }
-   System.out.println(tracking.score);
+}
+
+public void flickingStartScreen() {
+  textSize(50);
+  fill(0, 0, 0);
+  text("Flicking", 550, 100);
+  back.drawButton();
+  start.drawButton();
+  flickingSwitch.drawSwitch();
+  flickingSwitch.detectDifficulty();
+}
+
+public void flickingGame() {
+   // actual flicking game
+   textSize(50);
+   fill(0, 0, 0);
+   text("Score: " + flicking.score, 550, 100);
+   text("Max Score: " + flicking.maxScore, 550, 150);
+
+   flickingTarget.drawTarget();
+   flicking.timer++;
+   text("Time Left: " + (round((1800 - flicking.timer)/60)), 550, 200);
+   
+   // calculates everything once time limit is up
+   if (flicking.checkTimeLimit()) {
+     flicking.detectMaxScore();
+   if (flickingSwitch.difficulty == "Easy" && flicking.score >= flickingSwitch.reqScore) {
+     flickingSwitch.maxDifficulty = "Medium";
+   } else if (flickingSwitch.difficulty == "Medium" && flicking.score >= flickingSwitch.reqScore) {
+     flickingSwitch.maxDifficulty = "Hard";
+   }
+   // perhaps have a popup that gives you final score?
+   System.out.println("Final Score: " + flicking.score + "/" + flicking.maxTime);
+   // reset
+   screen = "flickingstart";
+   flicking.timer = 0;
+   }
+   
+   // scoring points
+   if (mousePressed && flickingTarget.mouseOverTarget() && flickingTarget.checkScreen("flickinggame")) {
+     flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
+     flicking.score += 60;
+   }
 }
 
 //public void windup(String nextScreen) {
