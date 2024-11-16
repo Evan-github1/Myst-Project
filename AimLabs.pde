@@ -5,6 +5,8 @@ Game tracking, flicking;
 Target trackingTarget, flickingTarget;
 String screen = "mainscreen";
 int windupTimer = 0;
+int flickingDelay = 0;
+
 public void setup() {
   size(1100, 750);
   // buttons
@@ -263,13 +265,15 @@ public void flickingStartScreen() {
 
 public void flickingGame() {
    // actual flicking game
+   flickingTarget.drawTarget();
    textSize(50);
    fill(0, 0, 0);
    text("Score: " + flicking.score, 550, 100);
    text("Max Score: " + flicking.maxScore, 550, 150);
 
-   flickingTarget.drawTarget();
    flicking.timer++;
+   flickingDelay++;
+   System.out.println(flickingDelay);
    text("Time Left: " + (round((1800 - flicking.timer)/60)), 550, 200);
    
    // calculates everything once time limit is up
@@ -281,7 +285,7 @@ public void flickingGame() {
      flickingSwitch.maxDifficulty = "Hard";
    }
    // perhaps have a popup that gives you final score?
-   System.out.println("Final Score: " + flicking.score + "/" + flicking.maxTime);
+   System.out.println("Final Score: " + flicking.score);
    // reset
    screen = "flickingstart";
    flicking.timer = 0;
@@ -289,25 +293,26 @@ public void flickingGame() {
    
    // scoring points
    if (mousePressed && flickingTarget.mouseOverTarget() && flickingTarget.checkScreen("flickinggame")) {
-     flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
      flicking.score += 60;
+     flickingDelay = 0;
+     // removes it from the screen, there's probably a better way to do this but o well
+     flickingTarget.y = 10000;
+   }
+   
+   if (flickingSwitch.difficulty == "Easy") {
+       if (flickingDelay == 60) {
+         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
+         flickingTarget.y = 375 + round(random(-30, 30));
+       }
+   } else if (flickingSwitch.difficulty == "Medium") {
+       if (flickingDelay == 45) {
+         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
+         flickingTarget.y = 375 + round(random(-30, 30));
+       }
+   } else if (flickingSwitch.difficulty == "Hard") {
+       if (flickingDelay == 30) {
+         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
+         flickingTarget.y = 375 + round(random(-30, 30));
+       }
    }
 }
-
-//public void windup(String nextScreen) {
-//    textSize(50);
-//    fill(0, 0, 0);
-//    windupTimer++;
-//    if (windupTimer <= 60) {
-//      text("3", 550, 100);
-//    } else if (120 >= windupTimer && windupTimer > 60) {
-//      text("2", 550, 100);
-//    } else if (180 >= windupTimer && windupTimer > 121) {
-//      text("1", 550, 100);
-//    } else if (240 >= windupTimer && windupTimer > 181) {
-//      text("GO!", 550, 100);
-//    } else if (240 < windupTimer) {
-//      windupTimer = 0;
-//      screen = nextScreen;
-//    }
-//}
