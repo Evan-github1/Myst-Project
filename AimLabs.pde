@@ -2,7 +2,8 @@ Buttons play, htp, trackingButton, back, start, settings, restoreDefault, flicki
 DifficultySwitches trackingSwitch, flickingSwitch;
 RGBSwitches backgroundColorSwitchR, backgroundColorSwitchG, backgroundColorSwitchB;
 Game tracking, flicking;
-Target trackingTarget, flickingTarget;
+Target trackingTarget;
+Bot flickingTarget;
 String screen = "mainscreen";
 int windupTimer = 0;
 int flickingDelay = 0;
@@ -32,7 +33,7 @@ public void setup() {
   
   // targets
   trackingTarget = new Target(550, 375, 50, 50, 3, 3);
-  flickingTarget = new Target(550, 375, 50, 50, 0, 0);
+  flickingTarget = new Bot(550, 375, 10, 10, 0, 0);
   
   textAlign(CENTER, CENTER);
 }
@@ -87,8 +88,9 @@ public void mouseReleased() {
       screen = "settingsscreen";
   } else if (flickingButton.mouseOverButton() && trackingButton.checkScreen("playscreen")) {
       screen = "flickingstart";
-  } else if (start.mouseOverButton()) {
-    if (start.checkScreen("trackingstart")) {
+  } else if (flickingButton.mouseOverButton() && trackingButton.checkScreen("playscreen")) {
+      screen = "trackingstart";
+  } else if (start.checkScreen("trackingstart") && start.mouseOverButton()) {
       // tracking game
       // resets things
       tracking.score = 0;
@@ -114,28 +116,25 @@ public void mouseReleased() {
          trackingTarget.dy = trackingTarget.FDY * 1.5;
        }
       screen = "trackinggame";
-    } else if (start.checkScreen("flickingstart")) {
+  } else if (start.checkScreen("flickingstart") && start.mouseOverButton()) {
       // resets things
-      tracking.score = 0;
-      tracking.timer = 0;
-      trackingTarget.x = trackingTarget.FX;
-      trackingTarget.y = trackingTarget.FY;
-      
+      flicking.score = 0;
+      flicking.timer = 0;
+      flickingTarget.x = flickingTarget.FX;
+      flickingTarget.y = flickingTarget.FY;
       // detects diffculty
-      if (trackingSwitch.difficulty == "Easy") {
-         trackingTarget.w = trackingTarget.FW;
-         trackingTarget.h = trackingTarget.FH;
-       } else if (trackingSwitch.difficulty == "Medium") {
-         trackingTarget.w = trackingTarget.FW/1.5;
-         trackingTarget.h = trackingTarget.FH/1.5;
-       } else if (trackingSwitch.difficulty == "Hard") {
-         trackingTarget.w = trackingTarget.FW/2;
-         trackingTarget.h = trackingTarget.FH/2;
-      }
+      //if (flickingSwitch.difficulty == "Easy") {
+      //   flickingTarget.w = flickingTarget.FW;
+      //   flickingTarget.h = flickingTarget.FH;
+      // } else if (flickingSwitch.difficulty == "Medium") {
+      //   flickingTarget.w = flickingTarget.FW/2;
+      //   flickingTarget.h = flickingTarget.FH/2;
+      // } else if (flickingSwitch.difficulty == "Hard") {
+      //   flickingTarget.w = flickingTarget.FW/4;
+      //   flickingTarget.h = flickingTarget.FH/4;
+      //}
       screen = "flickinggame";
-  }
-  }
-    else if (restoreDefault.mouseOverButton() && restoreDefault.checkScreen("settingsscreen")) {
+  } else if (restoreDefault.mouseOverButton() && restoreDefault.checkScreen("settingsscreen")) {
       backgroundColorSwitchR.sliderX = 74 * 3 + backgroundColorSwitchR.x - backgroundColorSwitchR.w/2;
       backgroundColorSwitchG.sliderX = 110 * 3 + backgroundColorSwitchG.x - backgroundColorSwitchG.w/2;
       backgroundColorSwitchB.sliderX = 229 * 3 + backgroundColorSwitchB.x - backgroundColorSwitchB.w/2;
@@ -273,7 +272,6 @@ public void flickingGame() {
 
    flicking.timer++;
    flickingDelay++;
-   System.out.println(flickingDelay);
    text("Time Left: " + (round((1800 - flicking.timer)/60)), 550, 200);
    
    // calculates everything once time limit is up
@@ -300,17 +298,17 @@ public void flickingGame() {
    }
    
    if (flickingSwitch.difficulty == "Easy") {
-       if (flickingDelay == 60) {
+       if (flickingDelay == 40) {
          flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
          flickingTarget.y = 375 + round(random(-30, 30));
        }
    } else if (flickingSwitch.difficulty == "Medium") {
-       if (flickingDelay == 45) {
+       if (flickingDelay == 20) {
          flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
          flickingTarget.y = 375 + round(random(-30, 30));
        }
    } else if (flickingSwitch.difficulty == "Hard") {
-       if (flickingDelay == 30) {
+       if (flickingDelay == 10) {
          flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
          flickingTarget.y = 375 + round(random(-30, 30));
        }

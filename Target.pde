@@ -1,7 +1,7 @@
 public class Target {
-  float x, y, w, h, dirChance1, dirChance2, timer, dx, dy;
-  final float FX, FY, FW, FH, FDX, FDY;
-  Target(int targetX, int targetY, int targetW, int targetH, float targetDX, float targetDY) { 
+  protected float x, y, w, h, dirChance1, dirChance2, timer, dx, dy;
+  protected final float FX, FY, FW, FH, FDX, FDY;
+  protected Target(int targetX, int targetY, int targetW, int targetH, float targetDX, float targetDY) { 
     // note- not all targets have to be moving, set DX and DY to 0 if it is static
     x = targetX;
     y = targetY;
@@ -21,14 +21,14 @@ public class Target {
     timer = 0;
   }
   
-  public void drawTarget() {
+  protected void drawTarget() {
     rectMode(CENTER);
     fill(255, 255, 255);
     moveTarget();
     rect(x, y, w, h);
   }
   
-  public boolean mouseOverTarget() {
+  protected boolean mouseOverTarget() {
     if (mouseX <= x + w/2 && mouseX >= x - w/2 && mouseY >= y - h/2 && mouseY <= y + h/2) {
       return true;
     } else {
@@ -36,7 +36,7 @@ public class Target {
     }
   }
   
-  public boolean checkScreen(String targetScreen /* enter what screen the target is */) {
+  protected boolean checkScreen(String targetScreen /* enter what screen the target is */) {
     // prevents dragging nonexistent sliders on different screens
     if(screen == targetScreen) {
       return true;
@@ -45,7 +45,7 @@ public class Target {
     }
   }
   
-  public void moveTarget() {
+  protected void moveTarget() {
      timer++;
      if (timer >= 60) {
        dirChance1 = (int) random(1, 3);
