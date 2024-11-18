@@ -3,7 +3,7 @@ DifficultySwitches trackingSwitch, flickingSwitch;
 RGBSwitches backgroundColorSwitchR, backgroundColorSwitchG, backgroundColorSwitchB;
 Game tracking, flicking;
 Target trackingTarget;
-Bot flickingTarget;
+Bot flickingBot;
 String screen = "mainscreen";
 int windupTimer = 0;
 int flickingDelay = 0;
@@ -22,7 +22,7 @@ public void setup() {
 
   // switches
   trackingSwitch = new DifficultySwitches(550, 300, 300, 100, 400);
-  flickingSwitch = new DifficultySwitches(550, 300, 300, 100, 900);
+  flickingSwitch = new DifficultySwitches(550, 300, 300, 100, 600);
   backgroundColorSwitchR = new RGBSwitches(550, 275, 765, 50, 74);
   backgroundColorSwitchG = new RGBSwitches(550, 375, 765, 50, 110);
   backgroundColorSwitchB = new RGBSwitches(550, 475, 765, 50, 229);
@@ -33,7 +33,7 @@ public void setup() {
   
   // targets
   trackingTarget = new Target(550, 375, 50, 50, 3, 3);
-  flickingTarget = new Bot(550, 375, 10, 10, 0, 0);
+  flickingBot = new Bot(550, 375, 10, 10, 0, 0);
   
   textAlign(CENTER, CENTER);
 }
@@ -120,18 +120,18 @@ public void mouseReleased() {
       // resets things
       flicking.score = 0;
       flicking.timer = 0;
-      flickingTarget.x = flickingTarget.FX;
-      flickingTarget.y = flickingTarget.FY;
+      flickingBot.x = flickingBot.FX;
+      flickingBot.y = flickingBot.FY;
       // detects diffculty
       //if (flickingSwitch.difficulty == "Easy") {
-      //   flickingTarget.w = flickingTarget.FW;
-      //   flickingTarget.h = flickingTarget.FH;
+      //   flickingBot.w = flickingBot.FW;
+      //   flickingBot.h = flickingBot.FH;
       // } else if (flickingSwitch.difficulty == "Medium") {
-      //   flickingTarget.w = flickingTarget.FW/2;
-      //   flickingTarget.h = flickingTarget.FH/2;
+      //   flickingBot.w = flickingBot.FW/2;
+      //   flickingBot.h = flickingBot.FH/2;
       // } else if (flickingSwitch.difficulty == "Hard") {
-      //   flickingTarget.w = flickingTarget.FW/4;
-      //   flickingTarget.h = flickingTarget.FH/4;
+      //   flickingBot.w = flickingBot.FW/4;
+      //   flickingBot.h = flickingBot.FH/4;
       //}
       screen = "flickinggame";
   } else if (restoreDefault.mouseOverButton() && restoreDefault.checkScreen("settingsscreen")) {
@@ -264,7 +264,7 @@ public void flickingStartScreen() {
 
 public void flickingGame() {
    // actual flicking game
-   flickingTarget.drawTarget();
+   flickingBot.drawTarget();
    textSize(50);
    fill(0, 0, 0);
    text("Score: " + flicking.score, 550, 100);
@@ -290,27 +290,45 @@ public void flickingGame() {
    }
    
    // scoring points
-   if (mousePressed && flickingTarget.mouseOverTarget() && flickingTarget.checkScreen("flickinggame")) {
+   if (mousePressed && flickingBot.checkScreen("flickinggame")) {
+     if (flickingBot.mouseOverTarget()) { // aka head
+       flickingBot.hits += 4;
+     } else if (flickingBot.mouseOverBody()) {
+       flickingBot.hits++;
+     } else if (flickingBot.mouseOverLegs()) {
+       flickingBot.hits += .8;
+     }
+   }
+   
+   if (flickingBot.detectHits()) {
      flicking.score += 60;
      flickingDelay = 0;
      // removes it from the screen, there's probably a better way to do this but o well
-     flickingTarget.y = 10000;
+     flickingBot.y = 10000;
    }
    
-   if (flickingSwitch.difficulty == "Easy") {
-       if (flickingDelay == 40) {
-         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
-         flickingTarget.y = 375 + round(random(-30, 30));
+   // moving it at different rates based on difficulty
+   switch (flickingSwitch.difficulty) {
+     case "Easy":
+       if (flickingDelay == 90) {
+         flickingBot.x = round(random(flickingBot.w/2, 1100 - flickingBot.w/2));
+         flickingBot.y = 375 + round(random(-30, 30));
+         flickingDelay = 0;
        }
-   } else if (flickingSwitch.difficulty == "Medium") {
-       if (flickingDelay == 20) {
-         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
-         flickingTarget.y = 375 + round(random(-30, 30));
+       break;
+     case "Medium":
+       if (flickingDelay == 75) {
+         flickingBot.x = round(random(flickingBot.w/2, 1100 - flickingBot.w/2));
+         flickingBot.y = 375 + round(random(-30, 30));
+         flickingDelay = 0;
        }
-   } else if (flickingSwitch.difficulty == "Hard") {
-       if (flickingDelay == 10) {
-         flickingTarget.x = round(random(flickingTarget.w/2, 1100 - flickingTarget.w/2));
-         flickingTarget.y = 375 + round(random(-30, 30));
+       break;
+     case "Hard":
+       if (flickingDelay == 60) {
+         flickingBot.x = round(random(flickingBot.w/2, 1100 - flickingBot.w/2));
+         flickingBot.y = 375 + round(random(-30, 30));
+         flickingDelay = 0;
        }
+       break;
    }
 }
