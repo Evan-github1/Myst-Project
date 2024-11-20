@@ -36,6 +36,7 @@ public class DifficultySwitches extends Switches {
   }
    
   protected void detectDifficulty() {
+    // locks max difficulty if player does not have required score
     if ((sliderX - sliderW/2) >= (x - w/3 - w/6) && (sliderX + sliderW/2) <= (x - w/3 + w/6) && (maxDifficulty == "Easy" || maxDifficulty == "Medium" || maxDifficulty == "Hard")) {
       difficulty = "Easy";
     } else if ((sliderX - sliderW/2) >= (x - w/6) && (sliderX + sliderW/2) <= (x + w/6)){

@@ -6,6 +6,7 @@ class RGBSwitches extends Switches {
     super(switchX, switchY, switchW, switchH);
     sliderW = w/32;
     defColor = giveColor;
+    // for every +3 in x, +1 in type of color (r, g, or b)
     sliderX = defColor * 3 + x - w/2;
   }
 
@@ -19,6 +20,7 @@ class RGBSwitches extends Switches {
   }
   
   public float returnColorValue() {
+    // gives the R/G/B number based on sliderX position
     return (sliderX - x + w/2)/(w/255);
   }
 }

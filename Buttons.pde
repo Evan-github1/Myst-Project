@@ -13,6 +13,7 @@ public class Buttons {
   public void drawButton() {
     textAlign(CENTER, CENTER);
     rectMode(CENTER);
+    // hover animation
     if (!mouseOverButton()) {
       fill(255, 255, 255);
       rect(x, y, w, h);

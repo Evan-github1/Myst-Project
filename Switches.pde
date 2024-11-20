@@ -22,6 +22,7 @@ public class Switches {
   }
  
   protected void dragSlider() {
+    // allows the player to drag the slider
     if (sliderX - sliderW/2 < x - w/2) {
       sliderX = sliderW/2 + x - w/2;
     } else if (sliderX + sliderW/2 > x + w/2) {
@@ -32,7 +33,7 @@ public class Switches {
       sliderX = mouseX;
     }
   }
-  
+
   protected boolean checkScreen(String switchScreen /* enter what screen the switch is */) {
     // prevents dragging nonexistent sliders on different screens
     if(screen == switchScreen) {
